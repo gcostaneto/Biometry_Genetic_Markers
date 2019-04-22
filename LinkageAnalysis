@@ -1,0 +1,42 @@
+#' linkage analysis for dominant markers
+LinkTst01 = function(M,
+                     N,         # total de testes
+                     alfa = .05, # significancia (padrao 5%)
+                     digits = 4  # digitos para resultado
+                            ){
+  
+  #' Passo 1: Contagem das classes
+  #'-------------------------------------
+  x = data.frame(gen=paste(M[,1],M[,2],sep="-"))
+  n = sapply(x,table)
+  
+  pa = n[1] + n[4]
+  re = n[2] + n[3]
+  
+  #' Passo 2: Estimativa de theta (ou r) a partir de dois pontos
+  #'-------------------------------------
+  r = re/(re+pa)
+  
+  #' Passo 3: Verossimilhança
+  #'-------------------------------------
+  #' 3.1 Verossimilhança sob hipoteses Ha e Ho
+  L1 = pa*log((1-r)/2) + re*log((r)/2) 
+  L2 = pa*log((0.5)/2) + re*log((0.5)/2) 
+  #' 3.2 Razão de Verossimilhança
+  LRT = -2*(L2-L1)
+  
+  #' Passo 4: Bonferroni, p-value e LOD
+  #'-------------------------------------
+  p    = pchisq(LRT, df=1, lower.tail = FALSE) 
+  bonf = alfa/N
+  LOD = 0.2172*LRT 
+  
+  #' Passo 5: output
+  #'-------------------------------------
+  return(data.frame(markers = paste(names(M)[1],names(M)[2],sep="-"),
+                    r = round(r,digits),
+                    LRT = round(LRT,digits),
+                    pvalue=round(p,digits),
+                    LOD = round(LOD, digits),
+                    Diagnosis = ifelse(r < 0.5 & p < bonf,"Linked","-")))
+}
