@@ -18,12 +18,11 @@ LinkTst01 = function(M,
   #'-------------------------------------
   x = data.frame(gen=paste(M[,1],M[,2],sep="-"))
   n = sapply(x,table)
+  p = c("0-0","1-1") # code for parentals
+  r = c("0-1","1-0") # code for recombinants
   
-  pa = sum(n[which(rownames(n) == "0-0")],
-           n[which(rownames(n) == "1-1")],na.rm = T) 
-  
-  re = sum(n[which(rownames(n) == "0-1")],
-           n[which(rownames(n) == "1-0")],na.rm = T)
+  pa = sum(n[rownames(n) %in% p],na.rm = T) 
+  re = sum(n[rownames(n) %in% r],na.rm = T)
   
   #' Passo 2: Estimativa de theta (ou r) a partir de dois pontos
   #'-------------------------------------
@@ -52,7 +51,6 @@ LinkTst01 = function(M,
                     LOD = round(LOD, digits),
                     Diagnosis = ifelse(r < 0.5 & p < bonf,"Linked","-")))
 }
-
 #'===============================================================================================
 #' Multi-marker multi-model test
 #'===============================================================================================
