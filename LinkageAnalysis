@@ -72,9 +72,9 @@ LinkTst012 = function(M,  # marker matrix
   c = c("2-1","1-2","1-0","0-1")
   d = c("2-0","0-2")
 
-  pa = sum(n[rownames(n) %in% p  ],na.rm = T) 
-  re = sum(n[rownames(n) %in% c  ],na.rm = T) 
-  dr = sum(n[rownames(n) %in% d  ],na.rm = T) 
+  pa = sum(n[rownames(n) %in% p  ],  na.rm = T) 
+  re = sum(n[rownames(n) %in% c  ],  na.rm = T) 
+  dr = sum(n[rownames(n) %in% d  ],  na.rm = T) 
   d1 = sum(n[rownames(n) %in% "1-1"],na.rm = T) 
   
   #' Passo 2: Estimativa de theta (ou r) a partir de dois pontos
@@ -83,18 +83,18 @@ LinkTst012 = function(M,  # marker matrix
   while(rM!=r){
     r = rM
     q = (r^2/2) / ((1-r)^2/2 + r^2/2) #
-    rM <- (re+(2*(dr+d1*q)))/(2*length(M[,1]))
+    rM = (re+(2*(dr+d1*q)))/(2*length(M[,1]))
     } 
   
   #' Passo 3: Verossimilhança
   #'-------------------------------------
   #' 3.1 Verossimilhança sob hipoteses Ha e Ho
-  L1 = pa*log(((1-r)^2)/4) + 
+  L1 = pa*log(((1-r)^2)/4)  + 
         re*log((r*(1-r))/2) +
         dr*log((r^2)/4)     + 
        (d1)*log(((1-r)^2)/2 + (r^2)/2) 
   
-  L2 <- pa*log(((1-0.5)^2)/4)   + 
+  L2 = pa*log(((1-0.5)^2)/4)    + 
          re*log((0.5*(1-0.5))/2) +
          dr*log((0.5^2)/4)       + 
          d1*log(((1-0.5)^2)/2    + (0.5^2)/2)
@@ -117,6 +117,7 @@ LinkTst012 = function(M,  # marker matrix
                     LOD = round(LOD, digits),
                     Diagnosis = ifelse(r < 0.5 & p < bonf,"Linked","-")))
 }
+
 
 #'===============================================================================================
 #' Multi-marker multi-model test
