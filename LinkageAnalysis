@@ -59,7 +59,7 @@ LinkTst01 = function(M,
 mult.link.test = function(type = c("01","012"), M, N, digits=3,start=1:2){
   
   results = NULL
-  ind=s
+  ind=start
   
   for(i in 1:(ncol(M)-1)){
     if(type == "01"){
