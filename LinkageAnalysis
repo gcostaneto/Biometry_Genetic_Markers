@@ -1,4 +1,13 @@
+#'===============================================================================================
+#' Author: Germano Martins F. Costa Neto  <germano.cneto@usp.br>
+#' Version: 0.01 (22 april 2019)
+#'===============================================================================================
+# Description: functions for linkage analysis
+
+
+#'===============================================================================================
 #' linkage analysis for dominant markers
+#'===============================================================================================
 LinkTst01 = function(M,
                      N,         # total de testes
                      alfa = .05, # significancia (padrao 5%)
@@ -10,8 +19,11 @@ LinkTst01 = function(M,
   x = data.frame(gen=paste(M[,1],M[,2],sep="-"))
   n = sapply(x,table)
   
-  pa = n[1] + n[4]
-  re = n[2] + n[3]
+  pa = sum(n[which(rownames(n) == "0-0")],
+           n[which(rownames(n) == "1-1")],na.rm = T) 
+  
+  re = sum(n[which(rownames(n) == "0-1")],
+           n[which(rownames(n) == "1-0")],na.rm = T)
   
   #' Passo 2: Estimativa de theta (ou r) a partir de dois pontos
   #'-------------------------------------
@@ -40,3 +52,24 @@ LinkTst01 = function(M,
                     LOD = round(LOD, digits),
                     Diagnosis = ifelse(r < 0.5 & p < bonf,"Linked","-")))
 }
+
+#'===============================================================================================
+#' Multi-marker multi-model test
+#'===============================================================================================
+mult.link.test = function(type = c("01","012"), M, N, digits=3,start=1:2){
+  
+  results = NULL
+  ind=s
+  
+  for(i in 1:(ncol(M)-1)){
+    if(type == "01"){
+      results=rbind(results,LinkTst01(M=mouse[,ind],N=13,digits=4))
+    }
+    if(type == "012"){
+      results=rbind(results,LinkTst012(M=mouse[,ind],N=13,digits=4))
+    }
+    ind = ind + 1
+  }
+  return(results)
+}
+
